@@ -6,6 +6,7 @@ import { CancelRequest } from './exceptions';
 const defaultOptions = {
   concurrency: 1,
   prerequest: [],
+  requestCache() {},
   preprocess: [],
   processor: Promise.resolve,
 };
@@ -44,7 +45,9 @@ export default class StackableCrawler extends EventEmitter {
     return async () => {
       try {
         const requestOptions = await this.applyMiddlewarePrerequest(url);
-        const results = await request(requestOptions);
+        const cached = await this._options.requestCache(requestOptions);
+        // eslint-disable-next-line no-unneeded-ternary
+        const results = cached ? cached : await request(requestOptions);
         const mwResults = await reduceMiddlewares(this._options.preprocess, results);
         await this._options.processor(mwResults);
       } catch (e) {

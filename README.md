@@ -6,6 +6,7 @@ middleware based lightweight crawler framework.
 
 + Customizable pre-request, pre-process middleware stacks (it enables to log, cache, normalize, etc...)
 + Cancelable crawler
++ Customizable caching strategy
 + Parallel crawling
 + Pause/Resume crawling (it enables to sleep crawler)
 + Error handling (it enables to retry)
@@ -82,6 +83,7 @@ Take one argument, configure object.
 {
   concurrency: 1, // max # of parallel crawling
   prerequest: [], // prerequest middleware functions
+  requestCache() {}, // cache strategy
   preprocess: [], // preprocess middleware functions
   processor() {}, // main callback to handle crawled Document
 }
@@ -90,6 +92,10 @@ Take one argument, configure object.
 ##### prerequest middleware
 
 Function that process `requestOption`s. Default argument is `{ uri: url }`. Function must return new (mutated) requestOptions or Promise[requestOptions].
+
+##### requestCache function
+
+Function that returns cached value or `undefined`. Type of cached value is T or Promise[T]. If cached value returned, crawler pass through that values to processor function. If undefined returned, crawler fetch document as usual.
 
 ##### preprocess middleware
 

@@ -216,5 +216,35 @@ describe(__filename, () => {
         });
       }, 0);
     }));
+
+    it('should use cache when requestCache() returns value', () => new Promise(done => {
+      const cacheValue = [{}, 'bodybody', { v: 1, vv: 2 }];
+      const requestCache = () => cacheValue;
+      const crawler = new StackableCrawler({
+        requestCache,
+        processor(args) {
+          assert.deepEqual(args, cacheValue);
+          done();
+        },
+      });
+
+      crawler.add('http://example.com/');
+    }));
+
+    it('should use cache when requestCache() returns Promised value', () => new Promise(done => {
+      const cacheValue = [{}, 'bodybody', { v: 1, vv: 2 }];
+      const requestCache = () => new Promise(resolve => {
+        setTimeout(() => resolve(cacheValue), 10);
+      });
+      const crawler = new StackableCrawler({
+        requestCache,
+        processor(args) {
+          assert.deepEqual(args, cacheValue);
+          done();
+        },
+      });
+
+      crawler.add('http://example.com/');
+    }));
   });
 });
