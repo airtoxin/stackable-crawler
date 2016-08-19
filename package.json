@@ -1,6 +1,6 @@
 {
   "name": "stackable-crawler",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "middleware based lightweight crawler framework",
   "main": "lib/index.js",
   "scripts": {
